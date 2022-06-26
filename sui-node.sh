@@ -69,9 +69,9 @@ Group=$iGroup
 Restart=always
 RestartSec=1
 LimitNOFILE=1024000
-ExecStart=$HOME/sui/target/release/sui-node --config-path /var/sui/fullnode.yaml
-ExecReload=/bin/kill -s HUP $MAINPID
-ExecStop=/bin/kill -s QUIT $MAINPID
+ExecStart=$iHOME/sui/target/release/sui-node --config-path /var/sui/fullnode.yaml
+ExecReload=/bin/kill -s HUP \$MAINPID
+ExecStop=/bin/kill -s QUIT \$MAINPID
 
 [Install]
 WantedBy=multi-user.target
