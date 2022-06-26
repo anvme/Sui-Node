@@ -100,6 +100,7 @@ EOF
             git checkout -B devnet --track upstream/devnet
             curl -fLJ https://github.com/MystenLabs/sui-genesis/raw/main/devnet/genesis.blob -o /var/sui/genesis.blob
             cp -pv crates/sui-config/data/fullnode-template.yaml  /var/sui/fullnode.yaml
+            sed -i.bak "s/db-path:.*/db-path: \"\/var\/sui\/db\"/ ; s/genesis-file-location:.*/genesis-file-location: \"\/var\/sui\/genesis.blob\"/" /var/sui/fullnode.yaml
             sudo systemctl restart sui
             sleep 2
             systemctl --no-pager status sui
