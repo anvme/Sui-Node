@@ -46,6 +46,7 @@ cd $HOME/sui
 git remote add upstream https://github.com/MystenLabs/sui 
 git fetch upstream
 git checkout --track upstream/devnet
+sudo rm -rf /var/sui/db
 sudo mkdir -p /var/sui/db
 chown -R $iUser:$iGroup /var/sui
 
