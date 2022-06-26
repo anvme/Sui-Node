@@ -28,7 +28,7 @@ ipv4="$(curl -s -4 ifconfig.me)"
 
 
 PS3="Please enter your choice: "
-options=("Install 1" "Update 2" "Reinstall 3" "Quit")
+options=("Install 1" "Update 2" "Quit")
 select opt in "${options[@]}"
 do
     case $opt in
@@ -104,57 +104,6 @@ EOF
             sudo systemctl restart sui
             sleep 2
             systemctl --no-pager status sui
-            break
-            ;;
-        "Reinstall 3")
-            echo "Reinstall begin in 5 sec. Type Ctrl+c to break"
-            sleep 7
-            rm -rf /var/sui/*
-            rm -rf $HOME/sui
-            git clone -v https://github.com/MystenLabs/sui.git $HOME/sui
-            cd $HOME/sui
-
-            git remote add upstream https://github.com/MystenLabs/sui 
-            git fetch upstream
-            git checkout --track upstream/devnet
-            sudo mkdir -p /var/sui/db
-            chown -R $iUser:$iGroup /var/sui
-
-            cp -pv crates/sui-config/data/fullnode-template.yaml  /var/sui/fullnode.yaml
-            sed -i.bak "s/db-path:.*/db-path: \"\/var\/sui\/db\"/ ; s/genesis-file-location:.*/genesis-file-location: \"\/var\/sui\/genesis.blob\"/" /var/sui/fullnode.yaml
-
-            curl -fLJ https://github.com/MystenLabs/sui-genesis/raw/main/devnet/genesis.blob -o /var/sui/genesis.blob
-
-            cargo build -p sui-node --release
-
-            sudo bash -c 'cat > /etc/systemd/system/sui.service' << EOF
-            [Unit]
-            Description=Sui Node
-            After=network.target syslog.target
-
-            [Service]
-            Type=simple
-            User=$iUser
-            Group=$iGroup
-            Restart=always
-            RestartSec=1
-            LimitNOFILE=1024000
-            ExecStart=$iHOME/sui/target/release/sui-node --config-path /var/sui/fullnode.yaml
-            ExecReload=/bin/kill -s HUP \$MAINPID
-            ExecStop=/bin/kill -s QUIT \$MAINPID
-
-            [Install]
-            WantedBy=multi-user.target
-EOF
-
-            sudo systemctl restart systemd-journald
-            sudo systemctl daemon-reload
-            sudo systemctl enable --now sui
-            systemctl --no-pager status sui
-
-            ###
-            printf "\n Node reinstalled \n\n>>  http://$ipv4:9000 \n\n"
-            printf "\n\n\n Check node status command: systemctl status sui\nNode log: journalctl -u sui -f \n "
             break
             ;;
         "Quit")
