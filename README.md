@@ -1,7 +1,7 @@
 # Sui-Node Installation script
-Update will be available soon
 
-Installatioin available only for clean user
+# Update node script will be available soon
+
 
 How to install?
 ```
