@@ -21,7 +21,7 @@
 # Vars
 iUser="$(whoami)"
 iGroup="$(id -gn)"
-iHOME="$(HOME)"
+iHOME=$HOME
 ipv4="$(curl -4 ifconfig.me)"
 # Start the action
 clear >$(tty)
