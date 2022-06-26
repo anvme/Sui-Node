@@ -27,7 +27,7 @@ ipv4="$(curl -s -4 ifconfig.me)"
 clear >$(tty)
 
 
-SUIAction='Please enter your choice: '
+PS3='Please enter your choice: '
 options=("Install sui node" "Update sui node" "Quit")
 select opt in "${options[@]}"
 do
@@ -81,7 +81,7 @@ do
 
             [Install]
             WantedBy=multi-user.target
-            EOF
+EOF
 
             sudo systemctl restart systemd-journald
             sudo systemctl daemon-reload
