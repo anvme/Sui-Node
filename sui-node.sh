@@ -22,66 +22,92 @@
 iUser="$(whoami)"
 iGroup="$(id -gn)"
 iHOME=$HOME
-ipv4="$(curl -4 ifconfig.me)"
+ipv4="$(curl -s -4 ifconfig.me)"
 # Start the action
 clear >$(tty)
 
-sudo apt update \
-    && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get install -y --no-install-recommends \
-    tzdata \
-    git \
-    ca-certificates \
-    curl \
-    build-essential \
-    libssl-dev \
-    pkg-config \
-    libclang-dev \
-    cmake
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-source $HOME/.cargo/env
 
-git clone -v https://github.com/MystenLabs/sui.git $HOME/sui
-cd $HOME/sui
+SUIAction='Please enter your choice: '
+options=("Install sui node" "Update sui node" "Quit")
+select opt in "${options[@]}"
+do
+    case $opt in
+        "Install sui node")
+            sudo apt update \
+                && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get install -y --no-install-recommends \
+                tzdata \
+                git \
+                ca-certificates \
+                curl \
+                build-essential \
+                libssl-dev \
+                pkg-config \
+                libclang-dev \
+                cmake
+            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+            source $HOME/.cargo/env
 
-git remote add upstream https://github.com/MystenLabs/sui 
-git fetch upstream
-git checkout --track upstream/devnet
-sudo rm -rf /var/sui/db
-sudo mkdir -p /var/sui/db
-chown -R $iUser:$iGroup /var/sui
+            git clone -v https://github.com/MystenLabs/sui.git $HOME/sui
+            cd $HOME/sui
 
-cp -pv crates/sui-config/data/fullnode-template.yaml  /var/sui/fullnode.yaml
-sed -i.bak "s/db-path:.*/db-path: \"\/var\/sui\/db\"/ ; s/genesis-file-location:.*/genesis-file-location: \"\/var\/sui\/genesis.blob\"/" /var/sui/fullnode.yaml
+            git remote add upstream https://github.com/MystenLabs/sui 
+            git fetch upstream
+            git checkout --track upstream/devnet
+            sudo mkdir -p /var/sui/db
+            chown -R $iUser:$iGroup /var/sui
 
-curl -fLJ https://github.com/MystenLabs/sui-genesis/raw/main/devnet/genesis.blob -o /var/sui/genesis.blob
+            cp -pv crates/sui-config/data/fullnode-template.yaml  /var/sui/fullnode.yaml
+            sed -i.bak "s/db-path:.*/db-path: \"\/var\/sui\/db\"/ ; s/genesis-file-location:.*/genesis-file-location: \"\/var\/sui\/genesis.blob\"/" /var/sui/fullnode.yaml
 
-cargo build -p sui-node --release
+            curl -fLJ https://github.com/MystenLabs/sui-genesis/raw/main/devnet/genesis.blob -o /var/sui/genesis.blob
 
-sudo bash -c 'cat > /etc/systemd/system/sui.service' << EOF
-[Unit]
-Description=Sui Node
-After=network.target syslog.target
+            cargo build -p sui-node --release
 
-[Service]
-Type=simple
-User=$iUser
-Group=$iGroup
-Restart=always
-RestartSec=1
-LimitNOFILE=1024000
-ExecStart=$iHOME/sui/target/release/sui-node --config-path /var/sui/fullnode.yaml
-ExecReload=/bin/kill -s HUP \$MAINPID
-ExecStop=/bin/kill -s QUIT \$MAINPID
+            sudo bash -c 'cat > /etc/systemd/system/sui.service' << EOF
+            [Unit]
+            Description=Sui Node
+            After=network.target syslog.target
 
-[Install]
-WantedBy=multi-user.target
-EOF
+            [Service]
+            Type=simple
+            User=$iUser
+            Group=$iGroup
+            Restart=always
+            RestartSec=1
+            LimitNOFILE=1024000
+            ExecStart=$HOME/sui/target/release/sui-node --config-path /var/sui/fullnode.yaml
+            ExecReload=/bin/kill -s HUP $MAINPID
+            ExecStop=/bin/kill -s QUIT $MAINPID
 
-sudo systemctl restart systemd-journald
-sudo systemctl daemon-reload
-sudo systemctl enable --now sui
-systemctl --no-pager status sui
+            [Install]
+            WantedBy=multi-user.target
+            EOF
 
-###
-printf "\nPost this address to #node-ip-application\n\n>>  http://$ipv4:9000 \n\n"
-printf "\n\n\n Check node status command: systemctl status sui\nNode log: journalctl -u sui -f \n "
+            sudo systemctl restart systemd-journald
+            sudo systemctl daemon-reload
+            sudo systemctl enable --now sui
+            systemctl --no-pager status sui
+
+            ###
+            printf "\nPost this address to #node-ip-application\n\n>>  http://$ipv4:9000 \n\n"
+            printf "\n\n\n Check node status command: systemctl status sui\nNode log: journalctl -u sui -f \n "
+            break
+            ;;
+        "Update sui node")
+            rm -rf /var/sui/db/*
+            cd $HOME/sui
+            git fetch upstream
+            git checkout -B devnet --track upstream/devnet
+            curl -fLJ https://github.com/MystenLabs/sui-genesis/raw/main/devnet/genesis.blob -o /var/sui/genesis.blob
+            cp -pv crates/sui-config/data/fullnode-template.yaml  /var/sui/fullnode.yaml
+            sudo systemctl restart sui
+            sleep 2
+            systemctl --no-pager status sui
+            break
+            ;;
+        "Quit")
+            break
+            ;;
+        *) echo "invalid option $REPLY";;
+    esac
+done
