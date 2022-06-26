@@ -24,10 +24,10 @@ iGroup="$(id -gn)"
 iHOME=$HOME
 ipv4="$(curl -s -4 ifconfig.me)"
 # Start the action
-printf "\n\n\n\n\n"
 
 
-PS3='Please enter your choice: '
+
+PS3="Please enter your choice: "
 options=("Install 1" "Update 2" "Reinstall 3" "Quit")
 select opt in "${options[@]}"
 do
