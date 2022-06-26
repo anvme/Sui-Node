@@ -75,9 +75,9 @@ do
             Restart=always
             RestartSec=1
             LimitNOFILE=1024000
-            ExecStart=$HOME/sui/target/release/sui-node --config-path /var/sui/fullnode.yaml
-            ExecReload=/bin/kill -s HUP $MAINPID
-            ExecStop=/bin/kill -s QUIT $MAINPID
+            ExecStart=$iHOME/sui/target/release/sui-node --config-path /var/sui/fullnode.yaml
+            ExecReload=/bin/kill -s HUP \$MAINPID
+            ExecStop=/bin/kill -s QUIT \$MAINPID
 
             [Install]
             WantedBy=multi-user.target
@@ -106,7 +106,7 @@ EOF
             systemctl --no-pager status sui
             break
             ;;
-         "Reinstall 3")
+        "Reinstall 3")
             echo "Reinstall begin in 5 sec. Type Ctrl+c to break"
             sleep 7
             rm -rf /var/sui/*
@@ -139,9 +139,9 @@ EOF
             Restart=always
             RestartSec=1
             LimitNOFILE=1024000
-            ExecStart=$HOME/sui/target/release/sui-node --config-path /var/sui/fullnode.yaml
-            ExecReload=/bin/kill -s HUP $MAINPID
-            ExecStop=/bin/kill -s QUIT $MAINPID
+            ExecStart=$iHOME/sui/target/release/sui-node --config-path /var/sui/fullnode.yaml
+            ExecReload=/bin/kill -s HUP \$MAINPID
+            ExecStop=/bin/kill -s QUIT \$MAINPID
 
             [Install]
             WantedBy=multi-user.target
@@ -153,7 +153,7 @@ EOF
             systemctl --no-pager status sui
 
             ###
-            printf "\nPost this address to #node-ip-application\n\n>>  http://$ipv4:9000 \n\n"
+            printf "\n Node reinstalled \n\n>>  http://$ipv4:9000 \n\n"
             printf "\n\n\n Check node status command: systemctl status sui\nNode log: journalctl -u sui -f \n "
             break
             ;;
