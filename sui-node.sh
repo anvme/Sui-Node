@@ -95,6 +95,7 @@ EOF
             ;;
         "Update 2")
             rm -rf /var/sui/db/*
+            source $HOME/.cargo/env
             cd $HOME/sui
             git fetch upstream
             git checkout -B devnet --track upstream/devnet
@@ -111,6 +112,7 @@ EOF
             sleep 7
             rm -rf /var/sui/*
             rm -rf $HOME/sui
+            source $HOME/.cargo/env
             git clone -v https://github.com/MystenLabs/sui.git $HOME/sui
             cd $HOME/sui
 
