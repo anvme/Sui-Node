@@ -24,15 +24,15 @@ iGroup="$(id -gn)"
 iHOME=$HOME
 ipv4="$(curl -s -4 ifconfig.me)"
 # Start the action
-clear >$(tty)
+printf "\n\n\n\n\n"
 
 
 PS3='Please enter your choice: '
-options=("Install sui node 1" "Update sui node 2" "Quit")
+options=("Install 1" "Update 2" "Quit")
 select opt in "${options[@]}"
 do
     case $opt in
-        "Install sui node 1")
+        "Install 1")
             sudo apt update \
                 && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get install -y --no-install-recommends \
                 tzdata \
@@ -93,7 +93,7 @@ EOF
             printf "\n\n\n Check node status command: systemctl status sui\nNode log: journalctl -u sui -f \n "
             break
             ;;
-        "Update sui node 2")
+        "Update 2")
             rm -rf /var/sui/db/*
             cd $HOME/sui
             git fetch upstream
