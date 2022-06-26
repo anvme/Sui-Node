@@ -24,7 +24,7 @@ iGroup="$(id -gn)"
 iHOME=$HOME
 ipv4="$(curl -s -4 ifconfig.me)"
 # Start the action
-
+clear >$(tty)
 
 
 PS3="Please enter your choice: "
