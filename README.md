@@ -5,7 +5,7 @@
 
 How to install or update your node? Just run
 ```
-curl -sL https://raw.githubusercontent.com/anvme/Sui-Node/main/sui-node.sh | bash
+wget https://raw.githubusercontent.com/anvme/Sui-Node/main/sui-node.sh && chmod +x sui-node.sh && ./sui-node.sh
 ```
 
 ### Check node metrics
