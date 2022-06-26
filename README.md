@@ -8,7 +8,8 @@ How to install?
 curl -sL https://raw.githubusercontent.com/anvme/Sui-Node/main/sui-node.sh | bash
 ```
 
-###Check node metrics
+### Check node metrics
+
 1.Make metrics public. Run the command and restart your node
 
 ```
