@@ -1,6 +1,6 @@
 # Sui-Node Installation script
 
-# Update node script will be available soon
+### Update node script will be available soon
 
 
 How to install?
