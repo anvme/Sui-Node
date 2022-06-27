@@ -54,7 +54,7 @@ do
             git fetch upstream
             git checkout --track upstream/devnet
             sudo mkdir -p /var/sui/db
-            chown -R $iUser:$iGroup /var/sui
+            sudo chown -R $iUser:$iGroup /var/sui
 
             cp -pv crates/sui-config/data/fullnode-template.yaml  /var/sui/fullnode.yaml
             sed -i.bak "s/db-path:.*/db-path: \"\/var\/sui\/db\"/ ; s/genesis-file-location:.*/genesis-file-location: \"\/var\/sui\/genesis.blob\"/" /var/sui/fullnode.yaml
@@ -122,7 +122,7 @@ EOF
             git fetch upstream
             git checkout --track upstream/devnet
             sudo mkdir -p /var/sui/db
-            chown -R $iUser:$iGroup /var/sui
+            sudo chown -R $iUser:$iGroup /var/sui
 
             cp -pv crates/sui-config/data/fullnode-template.yaml  /var/sui/fullnode.yaml
             sed -i.bak "s/db-path:.*/db-path: \"\/var\/sui\/db\"/ ; s/genesis-file-location:.*/genesis-file-location: \"\/var\/sui\/genesis.blob\"/" /var/sui/fullnode.yaml
