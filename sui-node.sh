@@ -94,6 +94,7 @@ EOF
             break
             ;;
         "Update 2")
+            sudo systemctl stop sui
             rm -rf /var/sui/db/*
             source $HOME/.cargo/env
             cd $HOME/sui
@@ -109,6 +110,7 @@ EOF
             ;;
         "Reinstall 3")
             echo "Reinstall begin in 5 sec. Type Ctrl+c to break"
+            sudo systemctl stop sui
             sleep 7
             rm -rf /var/sui/*
             rm -rf $HOME/sui
