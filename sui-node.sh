@@ -96,6 +96,7 @@ EOF
         "Update 2")
             sudo systemctl stop sui
             rm -rf /var/sui/db/*
+            rm -rf /var/sui/genesis.blob
             source $HOME/.cargo/env
             cd $HOME/sui
             git fetch upstream
